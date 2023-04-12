@@ -73,7 +73,13 @@ class Resolver
         if (count($matches) > 0 && is_array($matches[0]) && count($matches[0]) > 0) {
             $function = $matches[1][0];
 
-            return $function($this->removeQuotes($matches[2][0]));
+            if (preg_match_all('/(\'[^\']*\'|"[^"]*")/', $matches[2][0], $argsMatches) && count($argsMatches[0]) > 0) {
+                return $function(...array_map(function ($arg) {
+                    return $this->removeQuotes($arg);
+                }, $argsMatches[0]));
+            }
+
+            return Constants::NOT_RESOLVED;
         }
 
         return Constants::NOT_RESOLVED;
@@ -132,7 +138,7 @@ class Resolver
             );
 
             $contents->keys()->each(function ($key) use ($configKey, $contents) {
-                $current = $configKey ? $configKey .'.'. $key : $key ;
+                $current = $configKey ? $configKey . '.' . $key : $key;
                 config([$current => $contents->get($key)->toArray()]);
             });
         } while ($this->replaced > 0);

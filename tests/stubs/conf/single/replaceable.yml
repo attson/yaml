@@ -6,6 +6,7 @@ environment:
   app:
     name: "{{ config('app.name') }}"
     names: "{{ config('app.name') }} {{ config('app.name') }}"
+    default: "{{ config('notfound', 'default') }}"
 recursive:
   name: "{{'person.name'}} {{'person.address.country'}}"
 

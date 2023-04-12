@@ -45,6 +45,7 @@ class SymfonyYamlTest extends TestCase
 
         $this->assertEquals(config('app.name'), config('replaceable.environment.app.name'));
         $this->assertEquals(config('app.name') . " " . config('app.name'), config('replaceable.environment.app.names'));
+        $this->assertEquals("default", config('replaceable.environment.app.default'));
 
         $this->assertEquals('Antonio Carlos Brazil', config('replaceable.recursive.name'));
     }
