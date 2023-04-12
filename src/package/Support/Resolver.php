@@ -28,7 +28,7 @@ class Resolver
      */
     public function replaceContents($contents)
     {
-        preg_match_all('/{{(.*)}}/', $contents, $matches);
+        preg_match_all('/{{([^}]*)}}/', $contents, $matches);
 
         foreach ($matches[0] as $key => $match) {
             if (!empty($match)) {
@@ -131,7 +131,10 @@ class Resolver
                 $this->recursivelyFindAndReplaceExecutableCode($contents)
             );
 
-            config([$configKey => array_merge($contents->toArray(), config($configKey, []))]);
+            $contents->keys()->each(function ($key) use ($configKey, $contents) {
+                $current = $configKey ? $configKey .'.'. $key : $key ;
+                config([$current => $contents->get($key)->toArray()]);
+            });
         } while ($this->replaced > 0);
 
         return $contents;
